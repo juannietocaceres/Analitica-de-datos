@@ -1,0 +1,6 @@
+.streamlit_deps/
+__pycache__/
+*.pyc
+*.log
+*.err
+.ipynb_checkpoints/

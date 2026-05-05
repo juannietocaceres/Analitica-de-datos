@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentacion breve - Heroina en Colombia</title>
+    <style>
+        :root {
+            --primary: #1f4660;
+            --primary-dark: #0d2233;
+            --accent: #d6a449;
+            --mist: #eff5f7;
+            --reef: #8fd3d6;
+            --green: #5d8967;
+            --text: #18242d;
+            --text-soft: #41545f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(255, 255, 255, 0.15), transparent 30%),
+                linear-gradient(160deg, #0d1f2d 0%, #1e4257 45%, #5ca7a8 100%);
+            color: var(--text);
+            overflow: auto;
+        }
+
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-btn,
+        .slide-counter {
+            background: rgba(255, 255, 255, 0.92);
+            border: none;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            font-weight: 800;
+            padding: 10px 16px;
+        }
+
+        .nav-btn {
+            cursor: pointer;
+        }
+
+        .presentation-container {
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        .slide {
+            display: none;
+            min-height: calc(100vh - 110px);
+            background: rgba(255, 255, 255, 0.985);
+            border-radius: 28px;
+            padding: 34px 34px 42px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+            position: relative;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 7px;
+            background: linear-gradient(90deg, var(--accent), #f0d38d, var(--reef));
+            border-radius: 28px 28px 0 0;
+        }
+
+        .section-label {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 999px;
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        }
+
+        h1 {
+            font-size: clamp(2rem, 3.4vw, 3.1rem);
+            line-height: 1.06;
+            margin-bottom: 12px;
+            color: #0b1821;
+        }
+
+        .subtitle {
+            color: #233540;
+            font-size: 1.22rem;
+            font-weight: 600;
+            line-height: 1.55;
+            max-width: 900px;
+            margin-bottom: 26px;
+        }
+
+        .grid-2 {
+            display: grid;
+            gap: 22px;
+            grid-template-columns: 1.15fr 0.85fr;
+            align-items: start;
+        }
+
+        .card,
+        .script-box,
+        .chart-box {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(17, 43, 58, 0.12);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 12px 28px rgba(16, 39, 53, 0.08);
+        }
+
+        .card h3,
+        .script-box h3,
+        .chart-box h3 {
+            font-size: 1.22rem;
+            margin-bottom: 14px;
+            color: #0f2430;
+        }
+
+        .card p,
+        .script-box p {
+            color: var(--text-soft);
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .metric-row {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(3, 1fr);
+            margin-bottom: 22px;
+        }
+
+        .metric {
+            background: var(--mist);
+            border: 1px solid rgba(32, 74, 100, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 12px 24px rgba(31, 63, 88, 0.08);
+        }
+
+        .metric .value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .metric .label {
+            color: #243742;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .bullet-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .bullet-list li {
+            background: #eef4f7;
+            border-left: 6px solid var(--accent);
+            border-radius: 14px;
+            color: #20323d;
+            font-size: 1.02rem;
+            font-weight: 600;
+            line-height: 1.5;
+            padding: 15px 17px;
+        }
+
+        .callout-band {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 20px;
+        }
+
+        .callout {
+            border-radius: 20px;
+            padding: 18px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 900;
+            min-height: 95px;
+            display: flex;
+            align-items: end;
+            box-shadow: 0 14px 28px rgba(26, 56, 74, 0.14);
+        }
+
+        .dark { background: linear-gradient(135deg, #103246, #2d6c82); }
+        .green { background: linear-gradient(135deg, #35594f, #6f9c6b); }
+        .gold { background: linear-gradient(135deg, #8a5f2d, #d0a24f); }
+
+        .source-note {
+            color: #314650;
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-top: 16px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .chart-note {
+            margin-top: 10px;
+            color: #405964;
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 980px) {
+            .grid-2,
+            .metric-row,
+            .callout-band {
+                grid-template-columns: 1fr;
+            }
+
+            .slide {
+                min-height: auto;
+            }
+
+            .nav-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <button class="nav-btn" onclick="previousSlide()">Prev</button>
+        <span class="slide-counter" id="slideCounter">1 / 4</span>
+        <button class="nav-btn" onclick="nextSlide()">Next</button>
+    </div>
+
+    <div class="presentation-container">
+        <section class="slide">
+            <span class="section-label">Slide 1</span>
+            <h1>Incautacion de heroina en Colombia</h1>
+            <p class="subtitle">Reutilizamos la plantilla del workshop para responder una pregunta concreta: donde y cuando se concentra la mayor cantidad incautada en Colombia.</p>
+
+            <div class="metric-row">
+                <div class="metric">
+                    <span class="value">10.791</span>
+                    <span class="label">registros oficiales en el dataset</span>
+                </div>
+                <div class="metric">
+                    <span class="value">2010-2026</span>
+                    <span class="label">ventana temporal analizada</span>
+                </div>
+                <div class="metric">
+                    <span class="value">kg</span>
+                    <span class="label">medida numerica usada: cantidad incautada</span>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Variables elegidas</h3>
+                    <ul class="bullet-list">
+                        <li><strong>Tiempo:</strong> fecha del hecho, resumida por ano.</li>
+                        <li><strong>Categoria:</strong> departamento, para comparar territorios.</li>
+                        <li><strong>Medida:</strong> cantidad en kilogramos.</li>
+                    </ul>
+                </div>
+
+                <div class="script-box">
+                    <h3>Guion breve</h3>
+                    <p>En esta app no mostramos todos los datos de golpe. La idea es que en menos de 30 segundos alguien pueda detectar si la incautacion cambia en el tiempo y en que departamentos se concentra.</p>
+                </div>
+            </div>
+
+            <div class="source-note">Fuente: datos.gov.co, dataset oficial "INCAUTACION DE HEROINA" del Ministerio de Defensa Nacional.</div>
+        </section>
+
+        <section class="slide">
+            <span class="section-label">Slide 2</span>
+            <h1>Hallazgo principal</h1>
+            <p class="subtitle">Cuando excluimos registros especiales como ECUADOR o AGUAS INTERNACIONALES, Narino domina claramente el volumen acumulado.</p>
+
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3>Top departamentos por cantidad acumulada</h3>
+                    <svg viewBox="0 0 760 360" aria-label="Top departamentos">
+                        <line x1="110" y1="300" x2="700" y2="300" stroke="#cfd8de" stroke-width="2"/>
+                        <line x1="110" y1="60" x2="110" y2="300" stroke="#cfd8de" stroke-width="2"/>
+
+                        <rect x="145" y="70" width="90" height="230" rx="14" fill="#1f4660"/>
+                        <rect x="270" y="251" width="90" height="49" rx="14" fill="#5d8967"/>
+                        <rect x="395" y="272" width="90" height="28" rx="14" fill="#d6a449"/>
+                        <rect x="520" y="278" width="90" height="22" rx="14" fill="#8fd3d6"/>
+
+                        <text x="190" y="55" text-anchor="middle" font-size="22" font-weight="900" fill="#173244">2999.8</text>
+                        <text x="315" y="236" text-anchor="middle" font-size="22" font-weight="900" fill="#173244">644.9</text>
+                        <text x="440" y="257" text-anchor="middle" font-size="22" font-weight="900" fill="#173244">365.4</text>
+                        <text x="565" y="263" text-anchor="middle" font-size="22" font-weight="900" fill="#173244">305.4</text>
+
+                        <text x="190" y="325" text-anchor="middle" font-size="17" font-weight="800" fill="#304955">Narino</text>
+                        <text x="315" y="325" text-anchor="middle" font-size="17" font-weight="800" fill="#304955">Valle</text>
+                        <text x="440" y="325" text-anchor="middle" font-size="17" font-weight="800" fill="#304955">Bogota</text>
+                        <text x="565" y="325" text-anchor="middle" font-size="17" font-weight="800" fill="#304955">Antioquia</text>
+                    </svg>
+                    <div class="chart-note">Narino representa cerca del 53.7% del total validado en el dashboard.</div>
+                </div>
+
+                <div class="card">
+                    <h3>Interpretacion</h3>
+                    <ul class="bullet-list">
+                        <li>La concentracion geografica no esta repartida de forma uniforme.</li>
+                        <li>El dashboard ayuda a detectar rapidamente que Narino sobresale frente al resto.</li>
+                        <li>Despues aparecen Valle del Cauca, Bogota D.C. y Antioquia, pero bastante mas abajo.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <span class="section-label">Slide 3</span>
+            <h1>Comportamiento en el tiempo</h1>
+            <p class="subtitle">La tendencia anual no es lineal. Hay anos con picos claros y 2026 debe leerse con cuidado porque esta incompleto al 31 de marzo de 2026.</p>
+
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3>Totales anuales destacados</h3>
+                    <svg viewBox="0 0 760 340" aria-label="Tendencia anual">
+                        <line x1="90" y1="280" x2="680" y2="280" stroke="#cfd8de" stroke-width="2"/>
+                        <polyline
+                            fill="none"
+                            stroke="#1f4660"
+                            stroke-width="6"
+                            points="120,120 240,135 360,155 480,100 600,165"
+                        />
+                        <circle cx="120" cy="120" r="11" fill="#1f4660"/>
+                        <circle cx="240" cy="135" r="11" fill="#1f4660"/>
+                        <circle cx="360" cy="155" r="11" fill="#1f4660"/>
+                        <circle cx="480" cy="100" r="11" fill="#d6a449"/>
+                        <circle cx="600" cy="165" r="11" fill="#1f4660"/>
+
+                        <text x="120" y="102" text-anchor="middle" font-size="18" font-weight="900" fill="#173244">2011</text>
+                        <text x="240" y="117" text-anchor="middle" font-size="18" font-weight="900" fill="#173244">2016</text>
+                        <text x="360" y="137" text-anchor="middle" font-size="18" font-weight="900" fill="#173244">2012</text>
+                        <text x="480" y="82" text-anchor="middle" font-size="18" font-weight="900" fill="#173244">2023</text>
+                        <text x="600" y="147" text-anchor="middle" font-size="18" font-weight="900" fill="#173244">2017</text>
+
+                        <text x="120" y="305" text-anchor="middle" font-size="16" font-weight="800" fill="#304955">555 kg</text>
+                        <text x="240" y="305" text-anchor="middle" font-size="16" font-weight="800" fill="#304955">521 kg</text>
+                        <text x="360" y="305" text-anchor="middle" font-size="16" font-weight="800" fill="#304955">470 kg</text>
+                        <text x="480" y="305" text-anchor="middle" font-size="16" font-weight="800" fill="#304955">572 kg</text>
+                        <text x="600" y="305" text-anchor="middle" font-size="16" font-weight="800" fill="#304955">444 kg</text>
+                    </svg>
+                    <div class="chart-note">El ano 2023 es el maximo historico del dataset disponible.</div>
+                </div>
+
+                <div class="script-box">
+                    <h3>Como lo explicaria</h3>
+                    <p>En la serie de tiempo no vemos una subida constante, sino varios picos. Eso es importante porque el usuario del dashboard no deberia asumir una tendencia lineal. Por eso dejamos el filtro de anos y el total por ano como grafica principal.</p>
+                </div>
+            </div>
+
+            <div class="callout-band">
+                <div class="callout dark">La serie cambia bastante entre anos.</div>
+                <div class="callout green">2023 es el pico mas alto del dataset.</div>
+                <div class="callout gold">2026 es parcial, no comparable aun con un ano cerrado.</div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <span class="section-label">Slide 4</span>
+            <h1>Que entrega la app</h1>
+            <p class="subtitle">La mini app cumple la estructura del workshop y agrega una mejora practica: descarga del subconjunto filtrado.</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Componentes del dashboard</h3>
+                    <ul class="bullet-list">
+                        <li>3 filtros utiles: departamentos, rango de anos y rango de cantidad por registro.</li>
+                        <li>3 KPIs: total incautado, numero de registros y promedio por registro.</li>
+                        <li>3 visualizaciones: tendencia anual, top departamentos y distribucion anual.</li>
+                        <li>Mejora adicional: boton para descargar el CSV filtrado.</li>
+                    </ul>
+                </div>
+
+                <div class="script-box">
+                    <h3>Cierre en menos de 3 minutos</h3>
+                    <p>Mi conclusion es que el dashboard funciona porque responde una pregunta simple y accionable: la incautacion de heroina en Colombia se concentra geografica y temporalmente, con Narino como foco principal y con picos anuales muy marcados. La app permite comprobarlo rapido y explorar los detalles con filtros.</p>
+                </div>
+            </div>
+
+            <div class="source-note">Archivos de entrega: dashboard en Streamlit + presentacion HTML breve para sustentar el insight.</div>
+        </section>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll(".slide");
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.style.display = i === index ? "block" : "none";
+            });
+            document.getElementById("slideCounter").textContent = `${index + 1} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowRight") nextSlide();
+            if (event.key === "ArrowLeft") previousSlide();
+        });
+
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
