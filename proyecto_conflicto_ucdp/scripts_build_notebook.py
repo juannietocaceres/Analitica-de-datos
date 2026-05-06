@@ -348,13 +348,120 @@ cells = [
     ),
     markdown(
         """
-        ## 10. Interpretacion para storytelling
+        ## 10. Casos especificos de conflicto
+
+        Para que el trabajo no se quede en una mirada global, se seleccionan cuatro conflictos con alto peso reciente en la base: Rusia-Ucrania, Etiopia, Israel-Palestina y Sudan. La comparacion permite mostrar que cada conflicto tiene una dinamica distinta: continuidad, picos de escalamiento, dano civil e incertidumbre.
+        """
+    ),
+    code(
+        """
+        case_conflicts = ["Russia - Ukraine", "Ethiopia: Government", "Israel: Palestine", "Sudan: Government"]
+        case_labels = {
+            "Russia - Ukraine": "Rusia-Ucrania",
+            "Ethiopia: Government": "Etiopia",
+            "Israel: Palestine": "Israel-Palestina",
+            "Sudan: Government": "Sudan",
+        }
+
+        cases = monthly_panel[monthly_panel["conflict_name"].isin(case_conflicts)].copy()
+        cases["caso"] = cases["conflict_name"].map(case_labels)
+
+        case_summary = (
+            cases.groupby(["conflict_name", "caso"], as_index=False)
+            .agg(
+                eventos=("events", "sum"),
+                muertes=("fatalities_best", "sum"),
+                civiles=("civilian_fatalities", "sum"),
+                incertidumbre=("uncertainty_total", "sum"),
+            )
+            .sort_values("muertes", ascending=False)
+        )
+        case_summary["muertes_por_evento"] = case_summary["muertes"] / case_summary["eventos"]
+        case_summary["proporcion_civil"] = case_summary["civiles"] / case_summary["muertes"]
+        display(case_summary)
+        """
+    ),
+    code(
+        """
+        case_monthly = (
+            cases.groupby(["event_month", "caso"], as_index=False)
+            .agg(eventos=("events", "sum"), muertes=("fatalities_best", "sum"), civiles=("civilian_fatalities", "sum"))
+            .sort_values("event_month")
+        )
+
+        fig = px.line(
+            case_monthly,
+            x="event_month",
+            y="muertes",
+            color="caso",
+            title="Trayectorias mensuales de los conflictos seleccionados",
+            labels={"event_month": "Mes", "muertes": "Muertes estimadas", "caso": "Caso"},
+        )
+        fig.show()
+        """
+    ),
+    code(
+        """
+        fig = px.scatter(
+            case_summary,
+            x="eventos",
+            y="muertes",
+            size="civiles",
+            color="caso",
+            text="caso",
+            title="Frecuencia, letalidad y dano civil por conflicto",
+            labels={"eventos": "Eventos", "muertes": "Muertes estimadas", "civiles": "Muertes civiles"},
+        )
+        fig.update_traces(textposition="top center")
+        fig.show()
+        """
+    ),
+    markdown(
+        """
+        ## 11. Regresion por caso e interpretacion academica
+
+        El modelo global tiene un R2 bajo, lo que no invalida el proyecto; al contrario, se convierte en un hallazgo: la frecuencia de eventos no explica de forma suficiente la letalidad. Para profundizar, se ajusta la misma regresion por conflicto y se compara que tanto cambia el poder explicativo segun el caso.
+        """
+    ),
+    code(
+        """
+        case_regression_rows = []
+        for conflict in case_conflicts:
+            monthly_case = (
+                monthly_panel[monthly_panel["conflict_name"] == conflict]
+                .groupby("event_month", as_index=False)
+                .agg(events=("events", "sum"), fatalities_best=("fatalities_best", "sum"))
+            )
+            metrics = linear_regression_summary(monthly_case, target="fatalities_best")
+            case_regression_rows.append({
+                "caso": case_labels[conflict],
+                "meses": metrics["months"],
+                "pendiente": metrics["slope"],
+                "r2": metrics["r2"],
+                "rmse": metrics["rmse"],
+            })
+
+        case_regression = pd.DataFrame(case_regression_rows).sort_values("r2", ascending=False)
+        display(case_regression)
+        """
+    ),
+    markdown(
+        """
+        **Lectura:** si un caso tiene mayor R2, significa que dentro de ese conflicto la frecuencia mensual de eventos se parece mas al comportamiento de la letalidad. Si el R2 es bajo, la explicacion debe buscarse en la intensidad de eventos especificos, cambios de estrategia, ataques masivos, errores de medicion o incertidumbre de fuente.
+
+        Esta discusion es importante para la exposicion porque muestra pensamiento critico: no se fuerza el modelo para que "salga bonito"; se interpreta lo que el modelo realmente dice.
+        """
+    ),
+    markdown(
+        """
+        ## 12. Interpretacion para storytelling
 
         Lectura sugerida:
 
         1. La base reciente supera cien mil eventos, lo que justifica un flujo de limpieza y agregacion.
-        2. La letalidad se concentra en pocos paises y conflictos, especialmente Rusia-Ucrania dentro del periodo observado.
-        3. La regresion permite ver si la frecuencia de eventos explica la letalidad mensual, pero los residuales recuerdan que el contexto del conflicto importa.
+        2. La letalidad se concentra en pocos paises y conflictos, especialmente Rusia-Ucrania, Etiopia, Israel-Palestina y Sudan.
+        3. La regresion permite demostrar un limite analitico: frecuencia de eventos e intensidad humana no son equivalentes.
+        4. El valor academico del trabajo esta en pasar de una base grande y dificil a una conclusion prudente y defendible.
         """
     ),
     code(
@@ -366,7 +473,7 @@ cells = [
     ),
     markdown(
         """
-        ## 11. Conclusiones y limites
+        ## 13. Conclusiones y limites
 
         **Conclusion principal:** contar eventos no basta para entender una guerra. La frecuencia mensual ayuda, pero la intensidad por evento, el dano civil, la incertidumbre de las estimaciones y la precision geografica cambian la historia.
 

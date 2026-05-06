@@ -80,3 +80,19 @@ streamlit run app/streamlit_app.py
 - Explicar tres decisiones de limpieza con ejemplos concretos.
 - Usar la regresion como apoyo, no como verdad absoluta.
 - Cerrar con limitaciones: UCDP cuenta eventos letales reportados; los datos Candidate son preliminares y pueden cambiar.
+
+## Correccion academica agregada
+
+La version actual incluye una app mas orientada a exposicion academica:
+
+- Pregunta de investigacion e hipotesis.
+- Marco metodologico.
+- Comparacion de casos clave: Rusia-Ucrania, Etiopia, Israel-Palestina y Sudan.
+- Regresion global y regresiones por caso.
+- Conclusiones claras para defender oralmente.
+
+Tambien se agregaron documentos de apoyo en `reports/`:
+
+- `metodologia_conclusiones_academicas.md`
+- `presentacion_10_min_3_integrantes.md`
+- `checklist_entrega.md`
