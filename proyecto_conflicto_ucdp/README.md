@@ -1,4 +1,4 @@
-# Proyecto: intensidad y dano civil en conflictos recientes
+# Proyecto: intensidad y daño civil en conflictos bélicos recientes
 
 Este proyecto analiza eventos de violencia organizada registrados por UCDP para contar una historia clara: **en los conflictos recientes, la cantidad de eventos violentos no siempre explica por si sola la letalidad; algunos conflictos concentran muchas muertes en pocos episodios y otros muestran una violencia mas frecuente pero menos letal por evento**.
 
